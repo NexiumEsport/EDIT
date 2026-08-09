@@ -20,7 +20,7 @@ export default function MemberColumn({
   events: Event[]
 }) {
   return (
-    <div className="w-56 flex-shrink-0">
+    <div className="w-full sm:w-56 sm:flex-shrink-0">
       <div className="mb-3 flex items-center gap-2">
         <span
           className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white"

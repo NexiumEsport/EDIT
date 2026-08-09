@@ -56,7 +56,7 @@ export default async function TasksPage() {
         </button>
       </form>
 
-      <div className="flex gap-4 overflow-x-auto pb-4">
+      <div className="flex flex-col gap-6 sm:flex-row sm:gap-4 sm:overflow-x-auto sm:pb-4">
         {members?.map((member) => (
           <TaskMemberColumn
             key={member.id}

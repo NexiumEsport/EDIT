@@ -25,7 +25,7 @@ export default function TaskMemberColumn({
   const done = tasks.filter((t) => t.status === 'done')
 
   return (
-    <div className="w-64 flex-shrink-0">
+    <div className="w-full sm:w-64 sm:flex-shrink-0">
       <div className="mb-3 flex items-center gap-2">
         <span
           className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white"
