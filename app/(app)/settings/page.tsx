@@ -5,6 +5,7 @@ import PasswordForm from '@/components/settings/PasswordForm'
 import ExportButton from '@/components/settings/ExportButton'
 import DeleteAccountButton from '@/components/settings/DeleteAccountButton'
 import ResetDatabaseButton from '@/components/settings/ResetDatabaseButton'
+import PushSubscribeButton from '@/components/pwa/PushSubscribeButton'
 
 const COMMON_TIMEZONES = [
   'Europe/Paris',
@@ -81,6 +82,11 @@ export default async function SettingsPage() {
             Enregistrer
           </button>
         </form>
+      </div>
+
+      <div className="border-t pt-6">
+        <h2 className="mb-4 text-lg font-semibold">Notifications</h2>
+        <PushSubscribeButton />
       </div>
 
       <div className="border-t pt-6">

@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { sendPushToFamily } from "@/lib/push/send";
 
 export async function createRecord(animalId: string, formData: FormData) {
   const supabase = await createClient();
@@ -44,6 +45,12 @@ export async function createRecord(animalId: string, formData: FormData) {
       created_by: userData.user?.id ?? null,
     });
   }
+
+  await sendPushToFamily(animal.family_id, {
+    title: `${animal.name} — ${title}`,
+    body: `Nouveau ${type} ajouté`,
+    url: `/animals/${animalId}`,
+  });
 
   revalidatePath(`/animals/${animalId}`);
   revalidatePath("/calendar");
