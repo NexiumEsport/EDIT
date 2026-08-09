@@ -1,36 +1,28 @@
-"use server";
-
 import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
+import AnimalCard from "@/components/animals/AnimalCard";
 
-export async function createRecord(animalId: string, formData: FormData) {
+export default async function AnimalsPage() {
   const supabase = await createClient();
 
-  const type = formData.get("type") as string;
-  const title = formData.get("title") as string;
-  const content = formData.get("content") as string;
-  const date = formData.get("date") as string;
-
-  const { data: userData } = await supabase.auth.getUser();
-  const { data: animal } = await supabase
+  const { data: animals, error } = await supabase
     .from("animals")
-    .select("family_id")
-    .eq("id", animalId)
-    .single();
+    .select("id, name, species, photo_url")
+    .order("name");
 
-  if (!animal) throw new Error("Animal introuvable");
+  if (error) {
+    return <p className="text-red-600">Erreur de chargement des animaux.</p>;
+  }
 
-  const { error } = await supabase.from("animal_records").insert({
-    animal_id: animalId,
-    family_id: animal.family_id,
-    type,
-    title,
-    content: content || null,
-    date: date || null,
-    created_by: userData.user?.id ?? null,
-  });
-
-  if (error) throw new Error(error.message);
-
-  revalidatePath(`/animals/${animalId}`);
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6" style={{ fontFamily: "Fraunces, serif" }}>
+        Animaux
+      </h1>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        {animals?.map((animal) => (
+          <AnimalCard key={animal.id} animal={animal} />
+        ))}
+      </div>
+    </div>
+  );
 }
