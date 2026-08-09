@@ -42,6 +42,31 @@ export async function updateProfile(formData: FormData): Promise<void> {
   revalidatePath('/dashboard')
 }
 
+export async function updateUserColor(color: string): Promise<{ error?: string; success?: boolean }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { error: 'Non authentifie' }
+  }
+
+  const { error } = await supabase
+    .from('users')
+    .update({ color })
+    .eq('id', user.id)
+
+  if (error) {
+    return { error: 'Erreur lors de la mise a jour de la couleur' }
+  }
+
+  revalidatePath('/settings')
+  revalidatePath('/dashboard')
+  revalidatePath('/calendar')
+  revalidatePath('/tasks')
+
+  return { success: true }
+}
+
 export async function changePassword(formData: FormData): Promise<{ error?: string; success?: boolean }> {
   const newPassword = formData.get('new_password') as string
   const confirmPassword = formData.get('confirm_password') as string
@@ -127,9 +152,6 @@ export async function resetFamilyData(): Promise<{ error?: string; success?: boo
 
   const familyId = profile.family_id
 
-  // Ordre volontaire : tables dependantes avant tables referencees,
-  // meme si ON DELETE CASCADE existe deja sur family_id sur la plupart -
-  // explicite plutot qu'implicite pour cette action destructive.
   const tables = [
     'action_logs',
     'memory_entries',

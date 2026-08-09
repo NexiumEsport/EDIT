@@ -6,6 +6,7 @@ import ExportButton from '@/components/settings/ExportButton'
 import DeleteAccountButton from '@/components/settings/DeleteAccountButton'
 import ResetDatabaseButton from '@/components/settings/ResetDatabaseButton'
 import PushSubscribeButton from '@/components/pwa/PushSubscribeButton'
+import ColorPicker from '@/components/settings/ColorPicker'
 
 const COMMON_TIMEZONES = [
   'Europe/Paris',
@@ -26,7 +27,7 @@ export default async function SettingsPage() {
 
   const { data: profile } = await supabase
     .from('users')
-    .select('first_name, last_name, email, timezone, role')
+    .select('first_name, last_name, email, timezone, role, color')
     .eq('id', user.id)
     .single()
 
@@ -87,6 +88,11 @@ export default async function SettingsPage() {
       <div className="border-t pt-6">
         <h2 className="mb-4 text-lg font-semibold">Notifications</h2>
         <PushSubscribeButton />
+      </div>
+
+      <div className="border-t pt-6">
+        <h2 className="mb-4 text-lg font-semibold">Ma couleur</h2>
+        <ColorPicker currentColor={profile.color ?? '#4A5AE8'} />
       </div>
 
       <div className="border-t pt-6">
