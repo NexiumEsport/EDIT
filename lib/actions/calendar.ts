@@ -8,6 +8,7 @@ const addEventSchema = z.object({
   title: z.string().min(1).max(200),
   start_at: z.string().min(1),
   category: z.string().max(50).optional(),
+  assigned_to: z.string().uuid().optional(),
 })
 
 async function getSession() {
@@ -27,14 +28,17 @@ async function getSession() {
 }
 
 export async function addCalendarEvent(formData: FormData): Promise<void> {
+  const rawAssignedTo = formData.get('assigned_to')
+
   const parsed = addEventSchema.safeParse({
     title: formData.get('title'),
     start_at: formData.get('start_at'),
     category: formData.get('category') || undefined,
+    assigned_to: rawAssignedTo && rawAssignedTo !== '' ? rawAssignedTo : undefined,
   })
 
   if (!parsed.success) {
-    console.error('Champs invalides')
+    console.error('Champs invalides', parsed.error.flatten())
     return
   }
 
@@ -46,6 +50,7 @@ export async function addCalendarEvent(formData: FormData): Promise<void> {
     title: parsed.data.title,
     start_at: new Date(parsed.data.start_at).toISOString(),
     category: parsed.data.category ?? null,
+    assigned_to: parsed.data.assigned_to ?? null,
   })
 
   if (error) {
