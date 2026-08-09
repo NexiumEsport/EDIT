@@ -66,7 +66,7 @@ export default async function AnimalDetailPage({
           <p className="text-gray-500 text-sm">Aucune note ou vaccin enregistré pour {animal.name}.</p>
         )}
         {records?.map((record) => (
-          <AnimalRecordRow key={record.id} record={record} />
+          <AnimalRecordRow key={record.id} record={record} animalId={animal.id} />
         ))}
       </div>
     </div>

@@ -58,3 +58,16 @@ export async function createRecord(animalId: string, formData: FormData) {
 
   return record;
 }
+
+export async function deleteRecord(recordId: string, animalId: string) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("animal_records")
+    .delete()
+    .eq("id", recordId);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath(`/animals/${animalId}`);
+}
