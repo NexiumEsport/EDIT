@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-export default function RegisterPage() {
+function RegisterForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [firstName, setFirstName] = useState('')
@@ -79,5 +79,13 @@ export default function RegisterPage() {
         </button>
       </form>
     </div>
+  )
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Chargement...</div>}>
+      <RegisterForm />
+    </Suspense>
   )
 }
