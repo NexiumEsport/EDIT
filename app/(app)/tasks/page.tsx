@@ -64,10 +64,6 @@ export default async function TasksPage() {
             tasks={(tasks ?? []).filter((t) => t.assigned_to === member.id)}
           />
         ))}
-        <TaskMemberColumn
-          member={{ id: 'unassigned', first_name: 'Non assigné', color: '#6B7094' }}
-          tasks={(tasks ?? []).filter((t) => !t.assigned_to)}
-        />
       </div>
     </div>
   )

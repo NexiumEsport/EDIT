@@ -104,10 +104,6 @@ export default async function CalendarPage({
                 events={dayEvents.filter((e) => e.assigned_to === member.id)}
               />
             ))}
-            <MemberColumn
-              member={{ id: 'unassigned', first_name: 'Non assigné', color: '#6B7094' }}
-              events={dayEvents.filter((e) => !e.assigned_to)}
-            />
           </div>
         </>
       )}
