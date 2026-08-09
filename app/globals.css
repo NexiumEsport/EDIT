@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #F6F7FB;
+  --color-surface: #FFFFFF;
+  --color-ink: #1B1F3B;
+  --color-ink-muted: #6B7094;
+  --color-primary: #4A5AE8;
+  --color-primary-hover: #3B47C4;
+  --color-accent: #FF8F66;
+  --color-success: #2FAE79;
+  --color-danger: #E15554;
+  --color-border: #E3E5F1;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  color: var(--color-ink);
+  letter-spacing: -0.01em;
+}
+
+h1 { font-weight: 600; }
+h2 { font-weight: 600; }
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(27, 31, 59, 0.04);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  border-radius: 10px;
+  padding: 0.55rem 1.1rem;
+  font-weight: 500;
+  transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+}
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 90, 232, 0.25);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  transform: none;
+}
+
+.btn-danger {
+  color: var(--color-danger);
+  font-weight: 500;
+}
+.btn-danger:hover {
+  text-decoration: underline;
+}
+
+.input-field {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 0.55rem 0.8rem;
+  background: var(--color-surface);
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+.input-field:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(74, 90, 232, 0.12);
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
