@@ -105,21 +105,21 @@ export default async function DashboardPage() {
   ]
 
   return (
-    <div className="mx-auto max-w-4xl p-6">
+    <div className="mx-auto max-w-4xl p-4 sm:p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold">Bonjour {profile.first_name} 👋</h1>
+        <h1 className="text-xl font-semibold sm:text-2xl">Bonjour {profile.first_name} 👋</h1>
         <p className="text-sm text-[var(--color-ink-muted)]">{familyName}</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
         {widgets.map((w) => (
           <Link
             key={w.href}
             href={w.href}
-            className={`card group flex flex-col justify-between p-4 transition-transform hover:-translate-y-0.5 hover:shadow-md ${w.big ? 'col-span-2 sm:col-span-1' : ''}`}
+            className={`card group flex flex-col justify-between p-3 transition-transform hover:-translate-y-0.5 hover:shadow-md sm:p-4 ${w.big ? 'col-span-2 sm:col-span-1' : ''}`}
           >
             <div className="flex items-center justify-between">
-              <span className="text-2xl">{w.icon}</span>
+              <span className="text-xl sm:text-2xl">{w.icon}</span>
               {w.value !== null && (
                 <span
                   className="rounded-full px-2 py-0.5 text-xs font-semibold text-white"
@@ -129,9 +129,9 @@ export default async function DashboardPage() {
                 </span>
               )}
             </div>
-            <div className="mt-4">
-              <p className="font-medium">{w.title}</p>
-              <p className="text-xs text-[var(--color-ink-muted)]">{w.label}</p>
+            <div className="mt-3 sm:mt-4">
+              <p className="text-sm font-medium sm:text-base">{w.title}</p>
+              <p className="truncate text-xs text-[var(--color-ink-muted)]">{w.label}</p>
             </div>
           </Link>
         ))}

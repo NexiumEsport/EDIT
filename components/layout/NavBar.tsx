@@ -10,7 +10,7 @@ export default function NavBar() {
 
   return (
     <nav className="sticky top-0 z-10 border-b border-[var(--color-border)] bg-white/80 backdrop-blur-md">
-      <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
+      <div className="mx-auto flex max-w-4xl items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3">
         {isDashboard ? (
           <span className="font-[var(--font-display)] text-lg font-semibold">EDIT</span>
         ) : (

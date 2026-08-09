@@ -16,8 +16,6 @@ const MONTH_NAMES = [
   'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre',
 ]
 
-// Clé de jour basée sur l'heure LOCALE du navigateur, jamais sur UTC,
-// pour eviter tout decalage entre le point affiche et le detail du jour.
 function toLocalDateKey(date: Date) {
   const y = date.getFullYear()
   const m = String(date.getMonth() + 1).padStart(2, '0')
@@ -65,13 +63,11 @@ export default function MonthCalendar({ events }: { events: Event[] }) {
 
   const selectedEvents = eventsByDate.get(selectedDate) ?? []
 
-  // Reconstruit une date locale a partir de la cle "YYYY-MM-DD"
-  // sans passer par le constructeur Date(string) qui interprete en UTC.
   const [selYear, selMonth, selDay] = selectedDate.split('-').map(Number)
   const selectedDateObj = new Date(selYear, selMonth - 1, selDay)
 
   return (
-    <div className="card p-5">
+    <div className="card p-3 sm:p-5">
       <div className="mb-4 flex items-center justify-between">
         <button
           onClick={goPrevMonth}
@@ -79,7 +75,7 @@ export default function MonthCalendar({ events }: { events: Event[] }) {
         >
           ←
         </button>
-        <p className="font-[var(--font-display)] text-lg font-semibold">
+        <p className="font-[var(--font-display)] text-base font-semibold sm:text-lg">
           {MONTH_NAMES[month]} {year}
         </p>
         <button
@@ -109,7 +105,7 @@ export default function MonthCalendar({ events }: { events: Event[] }) {
             <button
               key={key}
               onClick={() => setSelectedDate(key)}
-              className={`relative flex h-11 flex-col items-center justify-center rounded-xl text-sm transition-all
+              className={`relative flex h-9 flex-col items-center justify-center rounded-lg text-xs transition-all sm:h-11 sm:rounded-xl sm:text-sm
                 ${isSelected
                   ? 'bg-[var(--color-primary)] text-white font-semibold shadow-md'
                   : 'hover:bg-[var(--color-bg)] hover:scale-105'}
@@ -119,7 +115,7 @@ export default function MonthCalendar({ events }: { events: Event[] }) {
               {date.getDate()}
               {dayEvents.length > 0 && (
                 <span
-                  className="absolute bottom-1.5 h-1.5 w-1.5 rounded-full"
+                  className="absolute bottom-1 h-1.5 w-1.5 rounded-full sm:bottom-1.5"
                   style={{ background: isSelected ? 'white' : 'var(--color-accent)' }}
                 />
               )}

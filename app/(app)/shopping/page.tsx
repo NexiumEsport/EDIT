@@ -19,10 +19,10 @@ export default async function ShoppingPage() {
   const checked = items?.filter((i) => i.is_checked) ?? []
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 p-6">
-      <h1 className="text-2xl font-semibold">🛒 Liste de courses</h1>
+    <div className="mx-auto max-w-2xl space-y-6 p-4 sm:p-6">
+      <h1 className="text-xl font-semibold sm:text-2xl">🛒 Liste de courses</h1>
 
-      <form action={addShoppingItem} className="card flex gap-2 p-4">
+      <form action={addShoppingItem} className="card flex flex-col gap-2 p-4 sm:flex-row">
         <input
           name="name"
           placeholder="Nom de l'article"
@@ -32,7 +32,7 @@ export default async function ShoppingPage() {
         <input
           name="quantity"
           placeholder="Quantité (optionnel)"
-          className="input-field w-32"
+          className="input-field sm:w-32"
         />
         <button type="submit" className="btn-primary">
           Ajouter

@@ -19,10 +19,10 @@ export default async function RemindersPage() {
   const done = reminders?.filter((r) => r.status === 'done') ?? []
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 p-6">
-      <h1 className="text-2xl font-semibold">🔔 Rappels</h1>
+    <div className="mx-auto max-w-2xl space-y-6 p-4 sm:p-6">
+      <h1 className="text-xl font-semibold sm:text-2xl">🔔 Rappels</h1>
 
-      <form action={addReminder} className="card flex gap-2 p-4">
+      <form action={addReminder} className="card flex flex-col gap-2 p-4 sm:flex-row">
         <input
           name="title"
           placeholder="Titre du rappel"
