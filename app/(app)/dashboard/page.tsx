@@ -25,6 +25,7 @@ export default async function DashboardPage() {
     { data: nextEvent },
     { count: membersCount },
     { count: memoriesCount },
+    { count: animalsCount },
   ] = await Promise.all([
     supabase.from('shopping_items').select('id', { count: 'exact', head: true }).eq('is_checked', false),
     supabase.from('tasks').select('id', { count: 'exact', head: true }).neq('status', 'done'),
@@ -32,6 +33,7 @@ export default async function DashboardPage() {
     supabase.from('calendar_events').select('title, start_at').gte('start_at', new Date().toISOString()).order('start_at', { ascending: true }).limit(1).maybeSingle(),
     supabase.from('users').select('id', { count: 'exact', head: true }).eq('family_id', profile.family_id),
     supabase.from('memory_entries').select('id', { count: 'exact', head: true }).eq('is_active', true),
+    supabase.from('animals').select('id', { count: 'exact', head: true }),
   ])
 
   const widgets = [
@@ -68,6 +70,14 @@ export default async function DashboardPage() {
         ? `${nextEvent.title} · ${new Date(nextEvent.start_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}`
         : 'Aucun événement à venir',
       color: '#4A5AE8',
+    },
+    {
+      href: '/animals',
+      icon: '🐾',
+      title: 'Animaux',
+      value: animalsCount ?? 0,
+      label: (animalsCount ?? 0) <= 1 ? 'animal' : 'animaux',
+      color: '#FF8F66',
     },
     {
       href: '/family',
