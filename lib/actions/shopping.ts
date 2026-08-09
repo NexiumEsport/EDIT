@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { sendPushToFamily } from '@/lib/push/send'
 
 const addItemSchema = z.object({
   name: z.string().min(1).max(100),
@@ -49,6 +50,12 @@ export async function addShoppingItem(formData: FormData): Promise<void> {
     console.error("Erreur lors de l'ajout", error)
     return
   }
+
+  await sendPushToFamily(familyId, {
+    title: 'Courses',
+    body: `${parsed.data.name} ajouté à la liste`,
+    url: '/shopping',
+  })
 
   revalidatePath('/shopping')
 }

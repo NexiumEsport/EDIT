@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { sendPushToFamily } from '@/lib/push/send'
 
 const addEventSchema = z.object({
   title: z.string().min(1).max(200),
@@ -57,6 +58,12 @@ export async function addCalendarEvent(formData: FormData): Promise<void> {
     console.error('Erreur création événement', error)
     return
   }
+
+  await sendPushToFamily(familyId, {
+    title: 'Nouvel événement',
+    body: parsed.data.title,
+    url: '/calendar',
+  })
 
   revalidatePath('/calendar')
 }

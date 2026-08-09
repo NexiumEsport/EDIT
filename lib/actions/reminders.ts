@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { sendPushToFamily } from '@/lib/push/send'
 
 const addReminderSchema = z.object({
   title: z.string().min(1).max(200),
@@ -55,6 +56,12 @@ export async function addReminder(formData: FormData): Promise<void> {
     console.error('Erreur création rappel', error)
     return
   }
+
+  await sendPushToFamily(familyId, {
+    title: 'Nouveau rappel',
+    body: parsed.data.title,
+    url: '/reminders',
+  })
 
   revalidatePath('/reminders')
 }
