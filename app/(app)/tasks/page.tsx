@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { addTask } from '@/lib/actions/tasks'
-import TaskRow from '@/components/tasks/TaskRow'
+import TaskRow from '@/components/tasks/tasksrow'
 
 export default async function TasksPage() {
   const supabase = await createClient()
