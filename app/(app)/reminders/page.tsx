@@ -11,7 +11,7 @@ export default async function RemindersPage() {
 
   const { data: reminders } = await supabase
     .from('reminders')
-    .select('*')
+    .select('*, creator:users!reminders_user_id_fkey(id, first_name, color)')
     .order('status', { ascending: true })
     .order('remind_at', { ascending: true })
 

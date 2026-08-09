@@ -3,11 +3,18 @@
 import { useTransition } from 'react'
 import { completeReminder, deleteReminder } from '@/lib/actions/reminders'
 
+type Creator = {
+  id: string
+  first_name: string
+  color: string | null
+} | null
+
 type Reminder = {
   id: string
   title: string
   remind_at: string
   status: string
+  creator?: Creator
 }
 
 export default function ReminderRow({ reminder }: { reminder: Reminder }) {
@@ -45,6 +52,15 @@ export default function ReminderRow({ reminder }: { reminder: Reminder }) {
         </p>
         <p className="text-xs text-[var(--color-ink-muted)]">{date}</p>
       </div>
+      {reminder.creator && (
+        <span
+          className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+          style={{ background: reminder.creator.color ?? '#6B7094' }}
+          title={reminder.creator.first_name}
+        >
+          {reminder.creator.first_name.charAt(0).toUpperCase()}
+        </span>
+      )}
       <button onClick={handleDelete} disabled={isPending} className="btn-danger text-sm">
         Supprimer
       </button>
