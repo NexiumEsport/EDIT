@@ -8,6 +8,7 @@ import { sendPushToFamily } from '@/lib/push/send'
 const addTaskSchema = z.object({
   title: z.string().min(1).max(200),
   priority: z.enum(['low', 'medium', 'high', 'urgent']),
+  assigned_to: z.string().uuid().optional(),
 })
 
 async function getSession() {
@@ -27,13 +28,16 @@ async function getSession() {
 }
 
 export async function addTask(formData: FormData): Promise<void> {
+  const rawAssignedTo = formData.get('assigned_to')
+
   const parsed = addTaskSchema.safeParse({
     title: formData.get('title'),
     priority: formData.get('priority'),
+    assigned_to: rawAssignedTo && rawAssignedTo !== '' ? rawAssignedTo : undefined,
   })
 
   if (!parsed.success) {
-    console.error('Champs invalides')
+    console.error('Champs invalides', parsed.error.flatten())
     return
   }
 
@@ -44,6 +48,7 @@ export async function addTask(formData: FormData): Promise<void> {
     created_by: userId,
     title: parsed.data.title,
     priority: parsed.data.priority,
+    assigned_to: parsed.data.assigned_to ?? null,
   })
 
   if (error) {
