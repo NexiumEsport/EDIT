@@ -3,11 +3,18 @@
 import { useTransition } from 'react'
 import { toggleShoppingItem, deleteShoppingItem } from '@/lib/actions/shopping'
 
+type Adder = {
+  id: string
+  first_name: string
+  color: string | null
+} | null
+
 type Item = {
   id: string
   name: string
   quantity: string | null
   is_checked: boolean
+  adder?: Adder
 }
 
 export default function ShoppingItemRow({ item }: { item: Item }) {
@@ -38,6 +45,15 @@ export default function ShoppingItemRow({ item }: { item: Item }) {
         {item.name}
         {item.quantity && <span className="ml-2 text-sm text-[var(--color-ink-muted)]">({item.quantity})</span>}
       </span>
+      {item.adder && (
+        <span
+          className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+          style={{ background: item.adder.color ?? '#6B7094' }}
+          title={item.adder.first_name}
+        >
+          {item.adder.first_name.charAt(0).toUpperCase()}
+        </span>
+      )}
       <button onClick={handleDelete} disabled={isPending} className="btn-danger text-sm">
         Supprimer
       </button>
