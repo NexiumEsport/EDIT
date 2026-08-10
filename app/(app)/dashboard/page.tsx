@@ -44,6 +44,7 @@ export default async function DashboardPage() {
       value: shoppingCount ?? 0,
       label: (shoppingCount ?? 0) <= 1 ? 'article à acheter' : 'articles à acheter',
       color: '#4A5AE8',
+      external: false,
     },
     {
       href: '/tasks',
@@ -52,6 +53,7 @@ export default async function DashboardPage() {
       value: tasksCount ?? 0,
       label: (tasksCount ?? 0) <= 1 ? 'tâche en cours' : 'tâches en cours',
       color: '#2FAE79',
+      external: false,
     },
     {
       href: '/reminders',
@@ -60,6 +62,7 @@ export default async function DashboardPage() {
       value: remindersCount ?? 0,
       label: (remindersCount ?? 0) <= 1 ? 'rappel actif' : 'rappels actifs',
       color: '#FF8F66',
+      external: false,
     },
     {
       href: '/calendar',
@@ -70,6 +73,7 @@ export default async function DashboardPage() {
         ? `${nextEvent.title} · ${new Date(nextEvent.start_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}`
         : 'Aucun événement à venir',
       color: '#4A5AE8',
+      external: false,
     },
     {
       href: '/animals',
@@ -78,6 +82,7 @@ export default async function DashboardPage() {
       value: animalsCount ?? 0,
       label: (animalsCount ?? 0) <= 1 ? 'animal' : 'animaux',
       color: '#FF8F66',
+      external: false,
     },
     {
       href: '/family',
@@ -86,6 +91,7 @@ export default async function DashboardPage() {
       value: membersCount ?? 0,
       label: (membersCount ?? 0) <= 1 ? 'membre' : 'membres',
       color: '#FF8F66',
+      external: false,
     },
     {
       href: '/memory',
@@ -94,6 +100,7 @@ export default async function DashboardPage() {
       value: memoriesCount ?? 0,
       label: (memoriesCount ?? 0) <= 1 ? 'info retenue' : 'infos retenues',
       color: '#2FAE79',
+      external: false,
     },
     {
       href: '/assistant',
@@ -103,6 +110,7 @@ export default async function DashboardPage() {
       label: 'Parler à EDIT',
       color: '#4A5AE8',
       big: true,
+      external: false,
     },
     {
       href: '/settings',
@@ -111,6 +119,16 @@ export default async function DashboardPage() {
       value: null,
       label: 'Profil et sécurité',
       color: '#6B7094',
+      external: false,
+    },
+    {
+      href: '/files',
+      icon: '📁',
+      title: 'Fichiers',
+      value: null,
+      label: 'Accès au NAS',
+      color: '#0EA5E9',
+      external: false,
     },
   ]
 
@@ -126,6 +144,8 @@ export default async function DashboardPage() {
           <Link
             key={w.href}
             href={w.href}
+            target={w.external ? '_blank' : undefined}
+            rel={w.external ? 'noopener noreferrer' : undefined}
             className={`card group flex flex-col justify-between p-3 transition-transform hover:-translate-y-0.5 hover:shadow-md sm:p-4 ${w.big ? 'col-span-2 sm:col-span-1' : ''}`}
           >
             <div className="flex items-center justify-between">
