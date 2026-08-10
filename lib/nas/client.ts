@@ -16,7 +16,14 @@ export async function getNasSession(): Promise<string> {
   const url = `${NAS_URL}/webapi/auth.cgi?api=SYNO.API.Auth&version=6&method=login&account=${encodeURIComponent(NAS_USERNAME)}&passwd=${encodeURIComponent(NAS_PASSWORD)}&session=FileStation&format=sid`
 
   const res = await fetch(url)
-  const json: SynologyAuthResponse = await res.json()
+  const text = await res.text()
+
+  let json: SynologyAuthResponse
+  try {
+    json = JSON.parse(text)
+  } catch {
+    throw new Error(`Reponse non-JSON de auth.cgi (status ${res.status}): ${text.slice(0, 200)}`)
+  }
 
   if (!json.success || !json.data) {
     throw new Error(`Echec authentification NAS (code ${json.error?.code})`)
