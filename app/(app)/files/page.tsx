@@ -2,6 +2,8 @@ import { listNasFolder } from '@/lib/nas/client'
 import Link from 'next/link'
 import NasUploadButton from '@/components/nas/NasUploadButton'
 import NasDeleteButton from '@/components/nas/NasDeleteButton'
+import NasCreateFolderButton from '@/components/nas/NasCreateFolderButton'
+import NasRenameButton from '@/components/nas/NasRenameButton'
 
 const CATEGORIES = [
   { label: 'Photo', path: '/Maison/Photo', icon: '📷' },
@@ -49,9 +51,12 @@ export default async function FilesPage({
     <div className="mx-auto max-w-2xl space-y-6 p-4 sm:p-6">
       <Link href="/files" className="text-sm text-indigo-600">← Retour</Link>
 
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="truncate text-xl font-semibold sm:text-2xl">{path}</h1>
-        <NasUploadButton folderPath={path} />
+        <div className="flex flex-wrap gap-2">
+          <NasCreateFolderButton folderPath={path} />
+          <NasUploadButton folderPath={path} />
+        </div>
       </div>
 
       {error && <p className="text-red-600">{error}</p>}
@@ -70,6 +75,7 @@ export default async function FilesPage({
               </a>
             )}
             {f.size !== undefined && <span className="text-xs text-gray-400">{Math.round(f.size / 1024)} Ko</span>}
+            <NasRenameButton path={f.path} currentName={f.name} />
             {!f.isdir && <NasDeleteButton filePath={f.path} />}
           </div>
         ))}

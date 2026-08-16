@@ -119,3 +119,29 @@ export async function deleteFromNasFolder(filePath: string): Promise<void> {
 
   throw new Error(`Timeout suppression ${filePath} (6s depasses)`)
 }
+
+export async function createNasFolder(folderPath: string, folderName: string): Promise<void> {
+  const sid = await getNasSession()
+
+  const url = `${NAS_URL}/webapi/entry.cgi?api=SYNO.FileStation.CreateFolder&version=2&method=create&folder_path=${encodeURIComponent(folderPath)}&name=${encodeURIComponent(folderName)}&_sid=${sid}`
+
+  const res = await fetch(url)
+  const json = await res.json()
+
+  if (!json.success) {
+    throw new Error(`Echec creation dossier ${folderName} (code ${json.error?.code})`)
+  }
+}
+
+export async function renameNasItem(path: string, newName: string): Promise<void> {
+  const sid = await getNasSession()
+
+  const url = `${NAS_URL}/webapi/entry.cgi?api=SYNO.FileStation.Rename&version=2&method=rename&path=${encodeURIComponent(path)}&name=${encodeURIComponent(newName)}&_sid=${sid}`
+
+  const res = await fetch(url)
+  const json = await res.json()
+
+  if (!json.success) {
+    throw new Error(`Echec renommage vers ${newName} (code ${json.error?.code})`)
+  }
+}
