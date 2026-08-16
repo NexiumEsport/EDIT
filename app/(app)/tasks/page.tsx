@@ -1,69 +1,37 @@
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
-import { addTask } from '@/lib/actions/tasks'
-import TaskMemberColumn from '@/components/tasks/TaskMemberColumn'
+import { createNotebook } from '@/lib/actions/tasks'
+import NotebookCard from '@/components/tasks/NotebookCard'
 
 export default async function TasksPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) redirect('/login')
-
-  const { data: profile } = await supabase
-    .from('users')
-    .select('family_id')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile) redirect('/login')
-
-  const { data: members } = await supabase
-    .from('users')
-    .select('id, first_name, color')
-    .eq('family_id', profile.family_id)
-
-  const { data: tasks } = await supabase
-    .from('tasks')
-    .select('*')
-    .order('status', { ascending: true })
-    .order('priority', { ascending: false })
+  const { data: notebooks } = await supabase
+    .from('notebooks')
+    .select('id, title, created_at')
+    .order('created_at', { ascending: false })
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 p-4 sm:p-6">
-      <h1 className="text-xl font-semibold sm:text-2xl">✅ Tâches</h1>
+    <div className="mx-auto max-w-2xl space-y-6 p-4 sm:p-6">
+      <h1 className="text-xl font-semibold sm:text-2xl">📝 Tâches</h1>
 
-      <form action={addTask} className="card flex flex-col gap-2 p-4 sm:flex-row sm:flex-wrap">
+      <form action={createNotebook} className="card flex gap-2 p-4">
         <input
           name="title"
-          placeholder="Titre de la tâche"
+          placeholder="Titre bloc"
           required
-          className="input-field flex-1"
+          className="flex-1 rounded-md border px-3 py-2"
         />
-        <select name="priority" defaultValue="medium" className="input-field">
-          <option value="low">Basse</option>
-          <option value="medium">Moyenne</option>
-          <option value="high">Haute</option>
-          <option value="urgent">Urgent</option>
-        </select>
-        <select name="assigned_to" defaultValue="" className="input-field sm:w-40">
-          <option value="">Non assigné</option>
-          {members?.map((m) => (
-            <option key={m.id} value={m.id}>{m.first_name}</option>
-          ))}
-        </select>
-        <button type="submit" className="btn-primary">
+        <button type="submit" className="rounded-md bg-indigo-600 px-4 py-2 font-medium text-white">
           Ajouter
         </button>
       </form>
 
-      <div className="flex flex-col gap-6 sm:flex-row sm:gap-4 sm:overflow-x-auto sm:pb-4">
-        {members?.map((member) => (
-          <TaskMemberColumn
-            key={member.id}
-            member={member}
-            tasks={(tasks ?? []).filter((t) => t.assigned_to === member.id)}
-          />
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {notebooks?.map((nb) => (
+          <NotebookCard key={nb.id} id={nb.id} title={nb.title} />
         ))}
+        {notebooks?.length === 0 && (
+          <p className="col-span-full text-sm text-gray-400">Aucun bloc pour l'instant.</p>
+        )}
       </div>
     </div>
   )

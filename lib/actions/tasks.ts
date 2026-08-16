@@ -5,12 +5,6 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { sendPushToFamily } from '@/lib/push/send'
 
-const addTaskSchema = z.object({
-  title: z.string().min(1).max(200),
-  priority: z.enum(['low', 'medium', 'high', 'urgent']),
-  assigned_to: z.string().uuid().optional(),
-})
-
 async function getSession() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -27,13 +21,13 @@ async function getSession() {
   return { supabase, userId: user.id, familyId: profile.family_id }
 }
 
-export async function addTask(formData: FormData): Promise<void> {
-  const rawAssignedTo = formData.get('assigned_to')
+const createNotebookSchema = z.object({
+  title: z.string().min(1).max(100),
+})
 
-  const parsed = addTaskSchema.safeParse({
+export async function createNotebook(formData: FormData): Promise<void> {
+  const parsed = createNotebookSchema.safeParse({
     title: formData.get('title'),
-    priority: formData.get('priority'),
-    assigned_to: rawAssignedTo && rawAssignedTo !== '' ? rawAssignedTo : undefined,
   })
 
   if (!parsed.success) {
@@ -43,46 +37,91 @@ export async function addTask(formData: FormData): Promise<void> {
 
   const { supabase, userId, familyId } = await getSession()
 
-  const { error } = await supabase.from('tasks').insert({
+  const { error } = await supabase.from('notebooks').insert({
     family_id: familyId,
     created_by: userId,
     title: parsed.data.title,
-    priority: parsed.data.priority,
-    assigned_to: parsed.data.assigned_to ?? null,
   })
 
   if (error) {
-    console.error('Erreur creation tache', error)
+    console.error('Erreur creation bloc note', error)
     return
   }
-
-  await sendPushToFamily(familyId, {
-    title: 'Nouvelle tâche',
-    body: parsed.data.title,
-    url: '/tasks',
-  })
 
   revalidatePath('/tasks')
 }
 
-export async function completeTask(id: string) {
+export async function deleteNotebook(id: string) {
   const { supabase } = await getSession()
 
-  const { error } = await supabase.from('tasks').update({ status: 'done' }).eq('id', id)
+  const { error } = await supabase.from('notebooks').delete().eq('id', id)
 
-  if (error) return { error: 'Erreur lors de la mise a jour' }
+  if (error) return { error: 'Erreur lors de la suppression' }
 
   revalidatePath('/tasks')
   return { success: true }
 }
 
-export async function deleteTask(id: string) {
+const addItemSchema = z.object({
+  notebookId: z.string().uuid(),
+  content: z.string().min(1).max(300),
+})
+
+export async function addNotebookItem(formData: FormData): Promise<void> {
+  const parsed = addItemSchema.safeParse({
+    notebookId: formData.get('notebookId'),
+    content: formData.get('content'),
+  })
+
+  if (!parsed.success) {
+    console.error('Champs invalides', parsed.error.flatten())
+    return
+  }
+
+  const { supabase, userId, familyId } = await getSession()
+
+  const { error } = await supabase.from('notebook_items').insert({
+    notebook_id: parsed.data.notebookId,
+    family_id: familyId,
+    created_by: userId,
+    content: parsed.data.content,
+  })
+
+  if (error) {
+    console.error('Erreur ajout element', error)
+    return
+  }
+
+  await sendPushToFamily(familyId, {
+    title: 'Nouvel élément ajouté',
+    body: parsed.data.content,
+    url: `/tasks/${parsed.data.notebookId}`,
+  })
+
+  revalidatePath(`/tasks/${parsed.data.notebookId}`)
+}
+
+export async function toggleNotebookItem(id: string, notebookId: string, isDone: boolean) {
   const { supabase } = await getSession()
 
-  const { error } = await supabase.from('tasks').delete().eq('id', id)
+  const { error } = await supabase
+    .from('notebook_items')
+    .update({ is_done: !isDone })
+    .eq('id', id)
+
+  if (error) return { error: 'Erreur lors de la mise a jour' }
+
+  revalidatePath(`/tasks/${notebookId}`)
+  return { success: true }
+}
+
+export async function deleteNotebookItem(id: string, notebookId: string) {
+  const { supabase } = await getSession()
+
+  const { error } = await supabase.from('notebook_items').delete().eq('id', id)
 
   if (error) return { error: 'Erreur lors de la suppression' }
 
-  revalidatePath('/tasks')
+  revalidatePath(`/tasks/${notebookId}`)
   return { success: true }
 }
